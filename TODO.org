@@ -1,0 +1,45 @@
+* DONE Moving up by Ctrl-Alt-u - работает из коробки
+- State "DONE"       from              [2020-01-13 Mon 01:53]
+* DONE The same for Ctrl-Alt-f,b,d
+- State "DONE"       from              [2020-01-13 Mon 01:53]
+* DONE Marking by "m"
+- State "DONE"       from              [2020-01-13 Mon 01:53]
+* DONE Copying sexp by "c"
+- State "DONE"       from              [2020-01-13 Mon 01:53]
+* DONE Killing the sexp by Ctrl-k (paredit-kill не годится, так как надо возвращать курсор на следующий sexp)
+- State "DONE"       from              [2020-01-13 Mon 01:53]
+* DONE Raising by "r" (paredit не годится так как неправильно райзит на левой скобке и не умеет райзить всё)
+- State "DONE"       from              [2020-01-13 Mon 01:53]
+* DONE Moving by Shift > and Shift <
+- State "DONE"       from              [2020-01-13 Mon 01:53]
+* DONE Moving between sexps by "j" "k"
+- State "DONE"       from              [2020-01-13 Mon 01:53]
+* DONE Raising by shift-r to raise all sexp from the same level.
+- State "DONE"       from              [2020-01-13 Mon 01:53]
+This should also keep all comments and reindent them.
+Original Lispy raises not all children, but only from the current one
+and further.
+* DONE Autoindent after the Enter.
+- State "DONE"       from              [2020-01-13 Mon 01:53]
+
+* TODO Insert paren when region is active, should surround region (paredit's insert does not)
+
+* TODO Replace C-w backward-delete-word may be on the base of the paredit-backward-delete (it deletes one character at a time
+
+* TODO May be implement moving of the left paren of the sexp
+Lem's paredit does not support slurping and barfing which moves the left paren
+of the sexp. But Emacs's does (if i remember correctly). Probably it should be implemented
+in the Paredit first.
+
+* BUGS
+
+** TODO When raising not the last item, cursor remains on a wrong line
+but should be on the last paren of the raised sexp.
+
+There will be a problem if you raise a doooom:
+#+BEGIN_SRC lisp
+(progn
+   (make-instanse 'dooooom)
+   (make-instanse 'basdsad))
+#+END_SRC
+
