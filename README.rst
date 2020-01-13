@@ -34,5 +34,32 @@ Pareto implements only most commonly used functionality of the Lispy:
 Pareto tries to keep implementation simple and readable by reusing as many code
 as possible and providing excessive comments.
 
+Installation
+============
+
+1. Clone the repository <https://github.com/40ants/lem-pareto>_ to some directory:
+
+   .. code:bash
+
+      mkdir -p ~/projects/lisp/
+      cd ~/projects/lisp/
+      git clone https://github.com/40ants/lem-pareto
+
+2. Add this initialization code to your ``~/.lem/init.lisp``:
+
+   .. code:lisp
+
+      (in-package :lem-user)
+
+      (push "~/projects/lisp/lem-pareto/" asdf:*central-registry*)
+      (asdf:load-system :lem-pareto)
+      ;; Enable Paredit and Pareto along with Lisp mode
+      (add-hook *find-file-hook*
+                (lambda (buffer)
+                  (when (eq (buffer-major-mode buffer)
+                            'lem-lisp-mode:lisp-mode)
+                    (change-buffer-mode buffer 'lem-paredit-mode:paredit-mode t)
+                    (change-buffer-mode buffer 'lem-pareto-mode:pareto-mode t))))
+
 .. _LEM: https://github.com/cxxxr/lem
 .. _Lispy: https://github.com/abo-abo/lispy
