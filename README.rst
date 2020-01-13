@@ -39,7 +39,7 @@ Installation
 
 1. Clone the repository https://github.com/40ants/lem-pareto to some directory:
 
-   .. code::bash
+   .. code:: bash
 
       mkdir -p ~/projects/lisp/
       cd ~/projects/lisp/
@@ -47,7 +47,7 @@ Installation
 
 2. Add this initialization code to your ``~/.lem/init.lisp``:
 
-   .. code::lisp
+   .. code:: lisp
 
       (in-package :lem-user)
 
