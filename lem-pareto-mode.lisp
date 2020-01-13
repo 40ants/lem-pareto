@@ -285,8 +285,22 @@
       (t
        (lem-paredit-mode:paredit-insert-paren)))))
 
+(lem:define-command pareto-mark-symbol () ()
+  "Marks current symbol"
+  ;; When cursor is on the left paren, we want to select
+  ;; the first symbol in a sexp
+  (do ()
+      ((not (left-p :at (point))))
+    (log:info "Skipping (")
+    (lem:character-offset (point) 2))
+
+  (lem:skip-symbol-backward (point))
+  (lem:mark-set)
+  (lem:skip-symbol-forward (point)))
+
 (lem:define-key *pareto-mode-keymap* "d" 'pareto-different)
 (lem:define-key *pareto-mode-keymap* "m" 'pareto-mark-list)
+(lem:define-key *pareto-mode-keymap* "M-m" 'pareto-mark-symbol)
 (lem:define-key *pareto-mode-keymap* "c" 'pareto-clone)
 (lem:define-key *pareto-mode-keymap* "r" 'pareto-raise)
 (lem:define-key *pareto-mode-keymap* "R" 'pareto-raise-some)

@@ -25,7 +25,10 @@ and further.
 * DONE Insert paren when region is active, should surround region (paredit's insert does not)
 - State "DONE"       from "STARTED"    [2020-01-13 Mon 06:29]
 - State "STARTED"    from "TODO"       [2020-01-13 Mon 05:58]
-* TODO Select current symbol on Alt-m (right now it is bound to back-to-indentation-command)
+* DONE Select current symbol on Alt-m (right now it is bound to back-to-indentation-command)
+- State "DONE"       from "STARTED"    [2020-01-13 Mon 19:26]
+- State "STARTED"    from "TODO"       [2020-01-13 Mon 06:30]
+* TODO When selection is active "raise" should raise it
 * TODO Backspace should delete preceding sexp
 * TODO Replace C-w backward-delete-word may be on the base of the paredit-backward-delete (it deletes one character at a time
 

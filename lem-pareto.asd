@@ -1,5 +1,6 @@
 (defsystem "lem-pareto"
+  :description "A LEM mode to make Lisp code editing more efficient!"
+  :author "Alexander Artemenko <svetlyak.40wt@gmail.com>"
+  :licence "BSD"
   :class :package-inferred-system
-  :author "Alexander Artemenko"
-  :author-email "svetlyak.40wt@gmail.com"
   :depends-on ("lem-pareto/lem-pareto-mode"))
