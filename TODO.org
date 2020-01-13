@@ -22,8 +22,11 @@ and further.
 * DONE Autoindent after the Enter.
 - State "DONE"       from              [2020-01-13 Mon 01:53]
 
-* TODO Insert paren when region is active, should surround region (paredit's insert does not)
-
+* DONE Insert paren when region is active, should surround region (paredit's insert does not)
+- State "DONE"       from "STARTED"    [2020-01-13 Mon 06:29]
+- State "STARTED"    from "TODO"       [2020-01-13 Mon 05:58]
+* TODO Select current symbol on Alt-m (right now it is bound to back-to-indentation-command)
+* TODO Backspace should delete preceding sexp
 * TODO Replace C-w backward-delete-word may be on the base of the paredit-backward-delete (it deletes one character at a time
 
 * TODO May be implement moving of the left paren of the sexp

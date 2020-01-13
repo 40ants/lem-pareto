@@ -29,6 +29,7 @@ Pareto implements only most commonly used functionality of the Lispy:
 * ``j`` - jumps to the next sibling sexp.
 * ``k`` - jumps to the previous sibling sexp.
 * ``Return`` - autoindents a new line (this is not from Lispy, but also nice to have feature).
+* ``(`` - does the same like Paredit, but additionally can surround selected region.
 
 Pareto tries to keep implementation simple and readable by reusing as many code
 as possible and providing excessive comments.

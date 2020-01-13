@@ -13,25 +13,25 @@
 (defun point ()
   (lem:current-point))
 
-(defun left-p ()
+(defun left-p (&key (at (point)))
   "Return t if before a opening paren."
-  (lem:looking-at (point)
+  (lem:looking-at at
                   "[[({]"))
 
-(defun right-p ()
+(defun right-p (&key (at (point)))
   "Return t if after a closing paren."
   ;; Here we need to look at the character before the cursor.
   ;; That is why we do character-offset -1
-  (lem:with-point ((before-cursor (point)))
+  (lem:with-point ((before-cursor at))
     (lem:character-offset before-cursor -1)
     (lem:looking-at before-cursor
                     "[])}]")))
 
-(defun one-char-left ()
-  (lem:character-offset (point) -1))
+(defun one-char-left (&key (from (point)))
+  (lem:character-offset from -1))
 
-(defun one-char-right ()
-  (lem:character-offset (point) 1))
+(defun one-char-right (&key (from (point)))
+  (lem:character-offset from 1))
 
 (defun up ()
   (lem:backward-up-list))
@@ -89,7 +89,7 @@
 
 (lem:define-command pareto-different () ()
   "Switch to the different side of current sexp."
-  (let* ((buffer (lem:current-buffer)))
+  (let ((buffer (lem:current-buffer)))
     (cond
       ;; During selection, "d" will move cursor from begining to the end
       ((and (lem:buffer-mark-p buffer)
@@ -250,6 +250,41 @@
   (lem:newline)
   (lem:indent-line (point)))
 
+(lem:define-command pareto-insert-paren () ()
+  "Inserts a new pair of parens.
+   By default, it acts like similar function from the Paredit,
+   but if there is an active selection, then it surrounds it
+   with parens. In this case, new place of the cursor depends
+   on the text surrounded by new parens.
+
+   If selected text is a sexp, then cursor is placed before it
+   and separated by space.
+   Otherwise, cursor is placed behind it without any space, because
+   most probably, you want to make a function call and it may be
+   called without arguments."
+  (let ((buffer (lem:current-buffer)))
+    (cond
+      ;; When selection is active, we want to surround it
+      ;; with parens
+      ((lem:buffer-mark-p buffer)
+       (let ((on-sexp (left-p :at (lem:region-beginning))))
+         (when on-sexp
+           (lem:insert-character (lem:region-beginning) #\Space))
+         (lem:insert-character (lem:region-beginning) #\()
+
+         (lem:insert-character (lem:region-end) #\))
+         ;; Also we want to put the cursor right after the opening paren
+         ;; or before the closing paren, depending on the code we are
+         ;; surrounding.
+         (lem:move-point (lem:current-point)
+                         (if on-sexp
+                             (one-char-right :from
+                                             (lem:region-beginning))
+                             (one-char-left :from
+                                            (lem:region-end))))))
+      (t
+       (lem-paredit-mode:paredit-insert-paren)))))
+
 (lem:define-key *pareto-mode-keymap* "d" 'pareto-different)
 (lem:define-key *pareto-mode-keymap* "m" 'pareto-mark-list)
 (lem:define-key *pareto-mode-keymap* "c" 'pareto-clone)
@@ -261,6 +296,7 @@
 (lem:define-key *pareto-mode-keymap* "j" 'pareto-next-sexp)
 (lem:define-key *pareto-mode-keymap* "k" 'pareto-prev-sexp)
 (lem:define-key *pareto-mode-keymap* "Return" 'pareto-newline)
+(lem:define-key *pareto-mode-keymap* "(" 'pareto-insert-paren)
 
 ;; TODO: replace with custom implementation which will delete a word
 ;;       probably it is a good idea to contribute it to the Paredit
