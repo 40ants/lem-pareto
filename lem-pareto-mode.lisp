@@ -36,10 +36,11 @@
 (defun up ()
   (lem:backward-up-list))
 
-(defun get-code (label body)
-  "A helper for `when-to-sexp' to extract different parts of the code."
-  (rest (assoc label body)))
-
+(eval-when (:compile-toplevel :load-toplevel :execute)
+  (defun get-code (label body)
+    "A helper for `when-to-sexp' to extract different parts of the code."
+    (rest (assoc label body))))
+  
 (defmacro when-on-sexp ((&key char-to-insert) &body body)
   "Executes body if current point is before or after the paren.
    Before execution, point is moved to the position before opening paren.
