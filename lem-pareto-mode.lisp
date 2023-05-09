@@ -163,10 +163,7 @@
     ;; Now, removing outer sexp to replace it with the raised one.
     ;; Here we need to override a *kill-ring* to prevent
     ;; outer sexp to be pushed to it.
-    (let ((lem::*kill-ring* nil)
-          (lem::*kill-new-flag* t)
-          (lem::*enable-clipboard-p* nil)
-          (lem::*kill-ring-yank-ptr* nil))
+    (lem::with-disable-killring ()
       (pareto-kill))
     (lem:yank)
     (lem-lisp-mode:lisp-indent-sexp)))
@@ -191,10 +188,7 @@
       ;; Now, removing outer sexp to replace it with the raised one.
       ;; Here we need to override a *kill-ring* to prevent
       ;; outer sexp to be pushed to it.
-      (let ((lem::*kill-ring* nil)
-            (lem::*kill-new-flag* t)
-            (lem::*enable-clipboard-p* nil)
-            (lem::*kill-ring-yank-ptr* nil))
+      (lem::with-disable-killring ()
         (pareto-kill))
       ;; Now inserting children back to the buffer.
       (lem:yank)
