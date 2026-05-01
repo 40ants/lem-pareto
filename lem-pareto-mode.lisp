@@ -34,13 +34,13 @@
   (lem:character-offset from 1))
 
 (defun up ()
-  (lem:backward-up-list))
+  (lem:backward-up-list (point)))
 
 (eval-when (:compile-toplevel :load-toplevel :execute)
   (defun get-code (label body)
     "A helper for `when-to-sexp' to extract different parts of the code."
     (rest (assoc label body))))
-  
+
 (defmacro when-on-sexp ((&key char-to-insert) &body body)
   "Executes body if current point is before or after the paren.
    Before execution, point is moved to the position before opening paren.
@@ -52,7 +52,7 @@
               (and left-code
                    (null right-code)))
       (error "You should use :left and :right labels together."))
-    
+
     `(progn
        ,(unless right-code
           '(when (right-p)
@@ -94,8 +94,8 @@
     (cond
       ;; During selection, "d" will move cursor from begining to the end
       ((and (lem:buffer-mark-p buffer)
-            (not (lem:point= (lem:region-beginning)
-                             (lem:region-end))))
+            (not (lem:point= (lem:region-beginning buffer)
+                             (lem:region-end buffer))))
        (lem:exchange-point-mark))
       ;; Moving from the end of sexp to the beginning
       ((right-p)
@@ -109,7 +109,7 @@
 (lem:define-command pareto-mark-list () ()
   "Mark list from special position."
   (when-on-sexp (:char-to-insert #\m)
-    (lem:mark-set)
+    (lem:set-cursor-mark (point) (point))
     (pareto-different)))
 
 (lem:define-command pareto-clone () ()
@@ -122,17 +122,18 @@
   ;; and a copy will be inserted after it.
   (when-on-sexp (:char-to-insert #\c)
     ;; We will add an empty new line, if the sexp begins in the first column.
-    (let ((add-extra-new-line (zerop (lem:point-charpos (point)))))
+    (let ((add-extra-new-line (zerop (lem:point-charpos (point))))
+          (buffer (lem:current-buffer)))
       ;; First, we need to select a sexp
       (pareto-mark-list)
       ;; and then to copy it as a region:
-      (let ((text (lem:points-to-string (lem:region-beginning)
-                                        (lem:region-end))))
+      (let ((text (lem:points-to-string (lem:region-beginning buffer)
+                                        (lem:region-end buffer))))
         (lem:newline)
-        
+
         (when add-extra-new-line
           (lem:newline))
-        
+
         (lem:insert-string (point)
                            text)
         ;; at the end, we are indenting it nicely.
@@ -159,7 +160,7 @@
     ;; Killing a current sexp and remembering it in the
     ;; *kill-ring*
     (pareto-kill)
-    (lem:backward-up-list)
+    (up)
     ;; Now, removing outer sexp to replace it with the raised one.
     ;; Here we need to override a *kill-ring* to prevent
     ;; outer sexp to be pushed to it.
@@ -184,7 +185,7 @@
           (end (search-last-sexp)))
       (lem:kill-region beginning end)
 
-      (lem:backward-up-list)
+      (up)
       ;; Now, removing outer sexp to replace it with the raised one.
       ;; Here we need to override a *kill-ring* to prevent
       ;; outer sexp to be pushed to it.
@@ -195,7 +196,7 @@
       ;; And to indent whole parent sexp to make every line fit it place.
       ;; This trick does not work if sexps were extracted to the top level.
       (lem:save-excursion
-        (lem:backward-up-list)
+        (up)
         (lem-lisp-mode:lisp-indent-sexp)))))
 
 (lem:define-command pareto-shift-right () ()
@@ -290,7 +291,7 @@
     (lem:character-offset (point) 2))
 
   (lem:skip-symbol-backward (point))
-  (lem:mark-set)
+  (lem:set-cursor-mark (point) (point))
   (lem:skip-symbol-forward (point)))
 
 (lem:define-key *pareto-mode-keymap* "d" 'pareto-different)
